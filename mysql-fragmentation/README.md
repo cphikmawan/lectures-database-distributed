@@ -1,6 +1,7 @@
 # Partisi Basis Data
 
 #### 05111540000119 - Cahya Putra Hikmawan
+##### https://github.com/cphikmawan/database-distributed-courses
 
 ### Outline
 [1. Deskripsi Server](#1-deskripsi-server)
@@ -334,12 +335,91 @@ SELECT * FROM payment PARTITION(p1) WHERE MONTH(payment_date) = 12;
 ### 3. Implementasi Partisi 2: Measures Dataset
 #### 3.1 Deskripsi Dataset
 ##### Deskripsi Singkat
+Dataset terdiri dari 2 tabel yaitu :
+1. Tabel measures
+2. Tabel partitioned_measures
+
 ##### Sumber Dataset
-[Download Dataset]()
+1. [http://www.vertabelo.com/blog/technical-articles/everything-you-need-to-know-about-mysql-partitions](http://www.vertabelo.com/blog/technical-articles/everything-you-need-to-know-about-mysql-partitions)
+
+2. [From Assets](assets/measure-db)
+
 #### 3.2 Import Dataset
-##### Cara Import Dataset 
+##### Cara Import Dataset
+1. Download dataset dari salah satu link diatas
+2. Membuat database dari **terminal**
+```sh
+echo "create database nama_database" | mysql -u username -p
+```
+> **Contoh** :
+> nama_database = measures
+> username = cloudy atau username = root
+
+3. Import dataset yang sudah didownload lewat **terminal**
+```sh
+mysql -u username -p nama_database < [nama_file_dataset].sql
+```
+
+> **Contoh** :
+> nama_database = measures
+> username = cloudy atau username = root
+> [nama_file_dataset].sql = measure-dataset.sql
+
+
 #### 3.3 Benchmarking
 ##### SELECT Bendhmarking
+- Tanpa Partisi
+```SQL
+SELECT SQL_NO_CACHE
+    COUNT(*)
+FROM
+    measure.measures
+WHERE
+    measure_timestamp >= '2016-01-01'
+        AND DAYOFWEEK(measure_timestamp) = 1;
+```
+- Dengan Partisi
+```SQL
+SELECT SQL_NO_CACHE
+    COUNT(*)
+FROM
+    measure.partitioned_measures
+WHERE
+    measure_timestamp >= '2016-01-01'
+        AND DAYOFWEEK(measure_timestamp) = 1;
+```
+
+| No | Tanpa Partisi (Detik) | Partisi (Detik) | Rows |
+| --- | --- | --- | --- |
+| 1 |1.87|0.35|112153|
+| 2 |0.71|0.31|112153|
+| 3 |0.70|0.32|112153|
+| 4 |0.70|0.31|112153|
+| 5 |0.71|0.30|112153|
+| 6 |0.71|0.31|112153|
+| 7 |0.71|0.31|112153|
+| 8 |0.71|0.30|112153|
+| 9 |0.70|0.30|112153|
+| 10 |0.71|0.30|112153|
+| **Mean** |**0.823**|**0.311**|**112153**|
+
 ##### BIG DELETE Benchmarking
+| No | Tanpa Partisi (Detik) | Partisi (Detik) | Rows |
+| --- | --- | --- | --- |
+| 1 |0.60|0.58|85314|
+| 2 |0.99|0.31|85314|
+| 3 |0.78|0.37|85314|
+| 4 |0.83|0.37|85314|
+| 5 |0.86|0.31|85314|
+| 6 |0.69|0.39|85314|
+| 7 |1.25|0.36|85314|
+| 8 |1.04|0.31|85314|
+| 9 |1.14|0.36|85314|
+| 10 |1.13|0.33|85314|
+| **Mean** |**0.931**|**0.369**|**85314**|
 
 ### Kesimpulan
+1. Partisi bisa dilakukan dengan banyak metode yaitu **range**, **key**, **hash**, **list**.
+2. Dalam kasus ini menggunakan metode HASH dengan n = 12 partisi dan didapatkan hasil kesimpulan sistem HASH yaitu **DATA *mod* n**
+3. Dalam kasus **SELECT** pada *Measures Dataset*, tabel yang menggunakan partisi lebih cepat (2 kali) daripada tabel yang tidak dipartisi.
+4. Dalam kasus **BIG DELETE** kecepatan query tabel yang menggunakan partisi mendominasi tabel yang tidak dipartisi karena untuk **DROP** tabel partisi cukup untuk **DROP** tabel partisi tersebut dan tidak perlu memilah data lagi.
