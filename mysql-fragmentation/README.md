@@ -157,6 +157,15 @@ CREATE TABLE rental (
 ALTER TABLE rental PARTITION BY HASH( MONTH(rental_date) ) PARTITIONS 12;
 ```
 
+- Cek Partisi
+```SQL
+EXPLAIN SELECT * FROM payment\G;
+
+EXPLAIN SELECT * FROM rental\G;
+```
+
+![Gambar](assets/images/cek_partisi.png "Cek Partisi")
+
 #### 2.3 Benchmarking
 ##### Insert data baru
 Data yang diinsert masing-masing 10 data per tabel partisi dari **p0** - **p11**.
