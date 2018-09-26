@@ -404,6 +404,18 @@ WHERE
 | **Mean** |**0.823**|**0.311**|**112153**|
 
 ##### BIG DELETE Benchmarking
+- Tanpa Partisi
+```SQL
+DELETE
+FROM measure.measures
+WHERE  measure_timestamp < '2015-01-01';
+```
+- Dengan Partisi
+```SQL
+ALTER TABLE measure.partitioned_measures 
+DROP PARTITION to_delete_logs ;
+```
+
 | No | Tanpa Partisi (Detik) | Partisi (Detik) | Rows |
 | --- | --- | --- | --- |
 | 1 |0.60|0.58|85314|
