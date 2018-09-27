@@ -12,7 +12,7 @@
 - [2.2 - Proses Pembuatan Partisi](#22-proses-pembuatan-partisi)
 - [2.3 - Benchmarking](#23-benchmarking)
 
-[3. Implementasi Partisi 2: Measures Dataset](#3-implementasi-partisi-2:-measures-dataset)
+[3. Implementasi Partisi 2: Measures Dataset](#3-implementasi-partisi-2-measures-dataset)
 
 - [3.1 - Deskripsi Dataset](#31-deskripsi-dataset)
 - [3.2 - Import Dataset](#32-import-dataset)
