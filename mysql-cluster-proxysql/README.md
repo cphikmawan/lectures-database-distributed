@@ -291,11 +291,7 @@ sudo systemctl start proxysql
 $ vagrant up
 ```
 
-2. Jalankan perintah berikut untuk provisioning ProxySQL
-```sh
-$ vagrant ssh proxy
-$ mysql -u admin -p -h 127.0.0.1 -P 6032 < /vagrant/proxysql.sql
-```
+2. Modifikasi **_proxysql.sql_**
 - [proxysql.sql](my-vagrant/proxysql.sql) - Modifikasi tambah user **_wordpress_** pada ProxySQL
 ```sql
 UPDATE global_variables SET variable_value='admin:password' WHERE variable_name='admin-admin_credentials';
@@ -319,6 +315,12 @@ INSERT INTO mysql_users(username, password, default_hostgroup) VALUES ('playgrou
 INSERT INTO mysql_users(username, password, default_hostgroup) VALUES ('wordpress', 'wordpress', 2);
 LOAD MYSQL USERS TO RUNTIME;
 SAVE MYSQL USERS TO DISK;
+```
+
+3. Jalankan perintah berikut untuk provisioning ProxySQL
+```sh
+$ vagrant ssh proxy
+$ mysql -u admin -p -h 127.0.0.1 -P 6032 < /vagrant/proxysql.sql
 ```
 
 > Kenapa provision untuk proxysql.sql dilakukan manual dan tidak ditaruh pada file **_deployProxySQL.sh_** ?
