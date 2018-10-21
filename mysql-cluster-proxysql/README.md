@@ -271,6 +271,7 @@ sudo mv wordpress/* /var/www/html
 sudo cp /vagrant/wp-config.php /var/www/html/
 sudo chown -R www-data:www-data /var/www/html/
 sudo chmod -R 755 /var/www/html/
+sudo mv /var/www/html/index.html /var/www/html/index.html.bak
 sudo systemctl restart apache2
 
 sudo ufw allow 33061
