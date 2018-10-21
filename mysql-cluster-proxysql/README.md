@@ -19,6 +19,15 @@
 - [3.3 - Testing](#33-testing)
 
 ### 1. Tujuan
+- Pada tugas ini, mahasiswa diharapkan mampu untuk
+
+1. Membuat server basis data terdistribusi dengan menggunakan konsep group replication
+
+2. Mampu menambahkan load balancer (ProxySQL) untuk membagi request ke server basis data
+
+3. Menambahkan aplikasi CMS (Wordpress) yang memanfaatkan arsitektur tersebut
+
+4. Menguji kehandalan sistem (testing) dengan menyimulasikan matinya beberapa node dan menunjukkan bahwa data tetap tereplikasi pada node-node server basis data.
 
 
 ### 2. Arsitektur Sistem
