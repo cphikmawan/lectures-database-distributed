@@ -1,0 +1,68 @@
+version: '3'
+services:
+  db-manager:
+    image: "mongo-start"
+    build: ./db-manager
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./db-manager/data:/data/db
+    depends_on:
+      - "db-node1"
+      - "db-node2"
+    
+  db-node1:
+    image: "mongo"
+    command: --replSet rs0 --smallfiles -oplogSize 128
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./db-node1/data:/data/db
+
+  db-node2:
+    image: "mongo"
+    command: --replSet rs0 --smallfiles -oplogSize 128
+    ports:
+      - "27019:27017"
+    volumes:
+      - ./db-node2/data:/data/db
+
+  setup-repl:
+    image: "setup-repl"
+    build: ./db-setup
+    depends_on:
+      - "db-manager"
+  
+  # mongocb gui connection
+  adminmongo:
+    image: "mrvautin/adminmongo"
+    ports:
+      - "1234:1234"
+
+  # create project
+  django-app:
+    build: .
+    volumes:
+      - ./django-app:/code/django-app
+    depends_on:
+      - "db-manager"
+
+  # create app
+  create-app:
+    build: .
+    command: python3 manage.py startapp myapp
+    volumes:
+      - ./django-app:/code/django-app
+    depends_on:
+      - "db-manager"
+
+  # run app
+  run-app:
+    build: .
+    command: python3 manage.py runserver 0.0.0.0:9001
+    volumes:
+      - ./django-app:/code/django-app
+    ports:
+      - "9001:9001"
+    depends_on:
+      - "db-manager"

@@ -6,7 +6,7 @@
 ##### [1. Assignment 1 - MySQL Replication](mysql-replication "MySQL Replication")
 ##### [2. Assignment 2 - MySQL Fragmentation](mysql-fragmentation "MySQL Fragmentation")
 ##### [3. Assignment 3 - MySQL Cluster & ProxySQL](mysql-cluster-proxysql "MySQL Cluster & ProxySQL")
-<!-- ##### [4. Assignment 4 - CRUD NoSQL MongoDB Atlas](mongodb-django "MongoDB Atlas") -->
+##### [4. Assignment 4 - MongoDB CRUD](django-crud "CRUD MongoDB")
 
 #### Created with <3 by Cloudy
 #### @2018-database-distributed | Institut Teknologi Sepuluh Nopember | Departemen Informatika

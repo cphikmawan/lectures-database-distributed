@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <title>Home</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-container">
+            <main class="main-container">
+                <div class="block">
+                    <div class="block-header">
+                        <h1 class="text-center">Quotes</h1>
+                    </div>
+                    <div class="block-body">
+                        <a href="{% url 'add' %}" class="btn btn-sm btn-success pull-left">Add Quotes</a>
+                        <btn class="btn btn-sm btn-info pull-right disabled">Total Data : {{ quotes.paginator.count }}</btn>
+                        <div class="table-responsive">
+                            <table class="table table-bordered mt-5">
+                                <thead>
+                                    <tr>
+                                        <th>Author</th>
+                                        <th>Text</th>
+                                        <th colspan="2">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for quote in quotes %}
+                                    <tr>
+                                        <td>{{ quote.Auther }}</td>
+                                        <td>{{ quote.quote }}</td>
+                                        <td class="text-center"><a href="{% url 'edit' quote.id %}" class="btn btn-sm btn-primary">Edit</a></td>
+                                        <td class="text-center"><a href="{% url 'delete' quote.id %}" class="btn btn-sm btn-danger">Delete</a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="text-center">
+                                {% if quotes.has_other_pages %}
+                                <ul class="pagination">
+                                    {% if quotes.has_previous %}
+                                        <li><a href="?page={{ quotes.previous_page_number }}">&laquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&laquo;</span></li>
+                                    {% endif %}
+
+                                    {% for i in quotes.paginator.page_range %}
+                                        {% if quotes.number == i %}
+                                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                                        {% elif i > quotes.number|add:'-4' and i < quotes.number|add:'4' %}
+                                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if quotes.has_next %}
+                                        <li><a href="?page={{ quotes.next_page_number }}">&raquo;</a></li>
+                                    {% else %}
+                                        <li class="disabled"><span>&raquo;</span></li>
+                                    {% endif %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+
+</html>
