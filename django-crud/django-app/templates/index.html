@@ -23,7 +23,7 @@
                     </div>
                     <div class="block-body">
                         <a href="{% url 'add' %}" class="btn btn-sm btn-success pull-left">Add Quotes</a>
-                        <btn class="btn btn-sm btn-info pull-right disabled">Total Data : {{ quotes.paginator.count }}</btn>
+                        <btn style="pointer-events:none" class="btn btn-sm btn-info pull-right">Total Data : {{ quotes.paginator.count }}</btn>
                         <div class="table-responsive">
                             <table class="table table-bordered mt-5">
                                 <thead>
