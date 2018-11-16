@@ -413,17 +413,11 @@ sudo docker-compose up
 
 > create html file manually
 
-- index.html
-    ```html
-    ```
+- [index.html](django-app/templates/index.html)
 
-- update.html
-    ```html
-    ```
+- [add.html](django-app/templates/add.html)
 
-- delete.html
-    ```html
-    ```
+- [edit.html](django-app/templates/edit.html)
 
 ##### Step 4 - Final Touch (Optional)
 
