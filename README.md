@@ -7,6 +7,7 @@
 ##### [2. Assignment 2 - MySQL Fragmentation](mysql-fragmentation "MySQL Fragmentation")
 ##### [3. Assignment 3 - MySQL Cluster & ProxySQL](mysql-cluster-proxysql "MySQL Cluster & ProxySQL")
 ##### [4. Assignment 4 - MongoDB CRUD](django-crud "CRUD MongoDB")
+##### [5. Assignment 5 - Apache Cassandra](cassandra "Apache Cassandra")
 
 #### Created with <3 by Cloudy
 #### @2018-database-distributed | Institut Teknologi Sepuluh Nopember | Departemen Informatika
