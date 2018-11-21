@@ -282,7 +282,7 @@
     
     ```sql
     # cassandra shell
-    cqlsh> COPY humansdb.Humans (sr_no, refund, m_status, income, cheat) FROM '/vagrant/provision/human.csv' WITH DELIMITER=',' AND HEADER=TRUE ;
+    cqlsh> COPY humansdb.Humans (sr_no, refund, m_status, income, cheat) FROM '/vagrant/provision/human.csv' WITH DELIMITER=',' AND HEADER=TRUE;
     ```
 
 - ##### Final Touch - Run Server

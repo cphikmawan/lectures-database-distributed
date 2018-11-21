@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from humans.models import Humans
+from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
