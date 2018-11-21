@@ -1,0 +1,11 @@
+sr_no,refund,m_status,income,cheat
+1,no,single,120k,no
+2,yes,married,40k,no
+3,no,devorce,50k,no
+4,no,single,110k,yes
+5,no,single,105k,no
+6,yes,single,100k,yes
+7,yes,married,102k,yes
+8,yes,devorce,80k,no
+9,no,devorce,45k,no
+10,no,single,50k,yes

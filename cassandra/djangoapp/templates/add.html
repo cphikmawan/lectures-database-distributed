@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>Add Human Data</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-container">
+            <main class="main-container">
+                <div class="block">
+                    <div class="block-header mt-5">
+                        <h1 class="text-center">Add Human Data</h1>
+                    </div>
+                    <div class="block-body">
+                        <form method="POST" action="{% url 'index' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">SR No</label>
+                                <input type="text" name="sr_no" class="form-control" placeholder="SR No">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Refund</label>
+                                <input type="text" name="refund" class="form-control" placeholder="Refund">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Married Status</label>
+                                <input type="text" name="m_status" class="form-control" placeholder="Married Status">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Income</label>
+                                <input type="text" name="income" class="form-control" placeholder="Income">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Cheat</label>
+                                <input type="text" name="cheat" class="form-control" placeholder="Cheat">
+                            </div>
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+
+</html>

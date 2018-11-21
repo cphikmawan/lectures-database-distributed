@@ -7,7 +7,6 @@
 
 #### [1. Vagrant](#1-vagrant-and-apache-cassandra)
 #### [2. Virtual Env and Django](#2-virtual-env-and-django)
-#### [3. Testing](#3-testing)
 
 --------------------------------------
 
@@ -39,7 +38,7 @@
         vb.name = "cassandra"
         vb.gui = false
         # Customize the amount of memory on the VM:
-        vb.memory = "1024"
+        vb.memory = "2048"
       end
 
       config.vm.provision "shell", path: "provision/default.sh",    privileged: false
@@ -84,67 +83,206 @@
     ```
 - ##### Step 3 - Vagrant Up
     ```sh
+    # dir (cassandra)
     $ vagrant up
     ```
 
-- ##### Step 4 - Open Cassandra Shell
-    ```sh
-    $ cqlsh 192.168.33.200
-    ```
-
-- ##### Step 5 - Create Keyspace
-    ```sql
-    (db) CREATE KEYSPACE quotesdb WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
-    ```
+-------------------------------------------------
 
 #### 2. Virtual Env and Django
 - ##### Step 1 - Install Virtual Env
     ```sh
-    $ 
+    # dir (cassandra)
+    $ sudo apt-get install python3-pip
+    $ sudo pip3 install virtualenv
     ```
 
 - ##### Step 2 - Create Virtual Env
     ```sh
-    $ 
+    # dir (cassandra)
+    $ virtualenv -p python3 venv
+
+    # will create venv directory
     ```
 
 - ##### Step 3 - Activate Virtual Env
     ```sh
-    $ 
+    # dir (cassandra)
+    $ source venv/bin/activate
     ```
 
 - ##### Step 4 - Create Django Project
     ```sh
-    $ 
+    # dir (cassandra)
+    $ django-admin startproject djangoapp
     ```
 
 - ##### Step 5 - Create Django App
     ```sh
-    $ 
+    # dir (cassandra/djangoapp)
+    $ python manage.py startapp humans
     ```
 
 - ##### Step 6 - Change Project Ownership
     ```sh
-    $ 
+    # dir (cassandra)
+    $ sudo chown -R $USER:$USER djangoapp
     ```
 
 - ##### Step 7 - CRUD Development
     1. Edit [settings.py](djangoapp/djangoapp/settings.py)
-    ```python
 
-    ```
-    2. Edit [models.py](djangoapp/djangoapp/models.py)
-    ```python
-    
-    ```
+    2. Edit [models.py](djangoapp/humans/models.py)
+        ```python
+        import uuid
+        from cassandra.cqlengine import columns
+        from django_cassandra_engine.models import DjangoCassandraModel
 
-- ##### Step 8 - Import Dataset
+        class Humans(DjangoCassandraModel):
+            sr_no = columns.Integer(primary_key=True)
+            refund = columns.Text(required=False)
+            m_status = columns.Text(required=False)
+            income = columns.Text(required=False)
+            cheat = columns.Text(required=False)
+        ```
+
+    3. Sync Apache Cassandra
+        ```sh
+        # dir (cassandra)
+        $ python manage.py sync_cassandra
+        ```
+        > It will create keyspace and table automatically
+
+    4. Edit [views.py](djangoapp/humans/views.py)
+        ```python
+        from django.shortcuts import render, redirect
+        from humans.models import Humans
+        from django.views.decorators.csrf import csrf_exempt,csrf_protect
+        from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+        @csrf_exempt
+        def index(request):
+            if request.method == 'POST':
+                sr_no = request.POST['sr_no']
+                refund = request.POST['refund']
+                m_status = request.POST['m_status']
+                income = request.POST['income']
+                cheat = request.POST['cheat']
+
+                human = Humans(sr_no=sr_no)
+                human.refund = refund
+                human.m_status = m_status
+                human.income = income
+                human.cheat = cheat
+                human.save()
+
+            humans = Humans.objects.all()
+            page = request.GET.get('page', 1)
+
+            paginator = Paginator(humans, 5)
+            try:
+                humans = paginator.page(page)
+            except PageNotAnInteger:
+                humans = paginator.page(1)
+            except EmptyPage:
+                humans = paginator.page(paginator.num_pages)
+
+            return render(request, 'index.html', {'humans': humans})
+
+        def add(request):
+            return render(request, 'add.html')
+
+        def edit(request, sr_no):
+            human = Humans.objects.get(pk=sr_no)
+
+            if request.method == "POST":
+                human.refund = request.POST['refund']
+                human.m_status = request.POST['m_status']
+                human.income = request.POST['income']
+                human.cheat = request.POST['cheat']
+                human.save()
+                return redirect('/')
+
+            return render(request, 'edit.html', {'human': human})
+
+        def delete(request, sr_no):
+            human = Humans.objects.get(pk=sr_no)
+            human.delete()
+            return redirect('/')
+        ```
+
+    5. Edit [urls.py](djangoapp/djangoapp/urls.py)
+        ```python
+        from django.contrib import admin
+        from django.urls import path
+
+        from humans import views
+
+        urlpatterns = [
+            # path('admin/', admin.site.urls),
+            path('', views.index, name='index'),
+            path('add/', views.add, name='add'),
+            path('edit/<int:sr_no>/', views.edit, name='edit'),
+            path('delete/<int:sr_no>/', views.delete, name='delete'),
+        ]
+        ```
+
+    6. Create [index.html](djangoapp/templates/index.html)
+    7. Create [add.html](djangoapp/templates/add.html)
+    8. Create [edit.html](djangoapp/templates/edit.html)
+
+- ##### Step 8 - Make Sure Your Directory Tree Like This
+        cassandra
+        ├── djangoapp
+        │   ├── djangoapp
+        │   │   ├── settings.py
+        │   │   ├── urls.py
+        │   │   └── wsgi.py
+        │   ├── humans
+        │   │   ├── admin.py
+        │   │   ├── apps.py
+        │   │   ├── migrations
+        │   │   ├── models.py
+        │   │   ├── tests.py
+        │   │   └── views.py
+        │   ├── manage.py
+        │   └── templates
+        │       ├── add.html
+        │       ├── edit.html
+        │       └── index.html
+        ├── provision
+        │   ├── cassandra.yaml
+        │   ├── default.sh
+        │   ├── human.csv
+        │   └── requirements.txt
+        ├── venv
+        ├── README.md
+        ├── sources.list
+        └── Vagrantfile
+
+- ##### Step 9 - Import Dataset
     ```sh
+    # dir (cassandra)
+    $ vagrant ssh
+
+    (vagrant)$ cqlsh 192.168.33.200
+    ```
+
+    ```sh
+    # in vagrant vm
     $ cqlsh 192.168.33.200
     ```
-
+    
     ```sql
-    (db) 
+    # cassandra shell
+    cqlsh> COPY humansdb.Humans (sr_no, refund, m_status, income, cheat) FROM '/vagrant/provision/human.csv' WITH DELIMITER=',' AND HEADER=TRUE ;
     ```
 
-#### 3. Testing
+- ##### Final Touch - Run Server
+    ```sh
+    # dir (cassandra/djangoapp)
+    $ python manage.py runserver
+    ```
+
+- ##### Testing
+    - Try to access http://localhost:8000/ on Browser
