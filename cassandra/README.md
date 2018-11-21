@@ -78,11 +78,73 @@
     sudo apt-get install cassandra -y
     sudo systemctl start cassandra
     sudo systemctl enable cassandra
+
+    sudo cp '/vagrant/provision/cassandra.yaml' '/etc/cassandra/'
+    sudo systemctl restart cassandra
     ```
 - ##### Step 3 - Vagrant Up
     ```sh
     $ vagrant up
     ```
 
+- ##### Step 4 - Open Cassandra Shell
+    ```sh
+    $ cqlsh 192.168.33.200
+    ```
+
+- ##### Step 5 - Create Keyspace
+    ```sql
+    (db) CREATE KEYSPACE quotesdb WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+    ```
+
 #### 2. Virtual Env and Django
+- ##### Step 1 - Install Virtual Env
+    ```sh
+    $ 
+    ```
+
+- ##### Step 2 - Create Virtual Env
+    ```sh
+    $ 
+    ```
+
+- ##### Step 3 - Activate Virtual Env
+    ```sh
+    $ 
+    ```
+
+- ##### Step 4 - Create Django Project
+    ```sh
+    $ 
+    ```
+
+- ##### Step 5 - Create Django App
+    ```sh
+    $ 
+    ```
+
+- ##### Step 6 - Change Project Ownership
+    ```sh
+    $ 
+    ```
+
+- ##### Step 7 - CRUD Development
+    1. Edit [settings.py](djangoapp/djangoapp/settings.py)
+    ```python
+
+    ```
+    2. Edit [models.py](djangoapp/djangoapp/models.py)
+    ```python
+    
+    ```
+
+- ##### Step 8 - Import Dataset
+    ```sh
+    $ cqlsh 192.168.33.200
+    ```
+
+    ```sql
+    (db) 
+    ```
+
 #### 3. Testing

@@ -25,3 +25,6 @@ sudo apt-get update
 sudo apt-get install cassandra -y
 sudo systemctl start cassandra
 sudo systemctl enable cassandra
+
+sudo cp '/vagrant/provision/cassandra.yaml' '/etc/cassandra/'
+sudo systemctl restart cassandra
