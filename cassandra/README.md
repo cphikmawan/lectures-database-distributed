@@ -28,20 +28,21 @@
     > [Vagrantfile](Vagrantfile)
     ```ruby
     Vagrant.configure("2") do |config|
-      config.vm.box = "bento/ubuntu-16.04"
-      config.vm.hostname = "cassandra"
-      config.vm.network "private_network", ip: "192.168.33.200"
-      config.vm.network "public_network", bridge: "enp2s0"
+        config.vm.box = "bento/ubuntu-16.04"
+        config.vm.hostname = "cassandra"
+        config.vm.network "private_network", ip: "192.168.33.200"
+        config.vm.network "public_network", bridge: "enp2s0"
 
-      config.vm.provider "virtualbox" do |vb|
-        # Display the VirtualBox GUI when booting the machine
-        vb.name = "cassandra"
-        vb.gui = false
-        # Customize the amount of memory on the VM:
-        vb.memory = "2048"
-      end
+        config.vm.provider "virtualbox" do |vb|
+            # Display the VirtualBox GUI when booting the machine
+            vb.name = "cassandra"
+            vb.gui = false
+            # Customize the amount of memory on the VM:
+            vb.memory = "2048"
+        end
 
-      config.vm.provision "shell", path: "provision/default.sh",    privileged: false
+        config.vm.provision "shell", path: "provision/default.sh",    privileged: false
+        config.vm.provision "shell", path: "provision/cassandra.sh", privileged: false
     end
     ```
 
@@ -118,25 +119,31 @@
     $ source venv/bin/activate
     ```
 
-- ##### Step 4 - Create Django Project
+- ##### Step 3 - Install Django Requirement
+    ```sh
+    # dir (cassandra/provision)
+    $ pip install -r requirements.txt
+    ```
+
+- ##### Step 5 - Create Django Project
     ```sh
     # dir (cassandra)
     $ django-admin startproject djangoapp
     ```
 
-- ##### Step 5 - Create Django App
+- ##### Step 6 - Create Django App
     ```sh
     # dir (cassandra/djangoapp)
     $ python manage.py startapp humans
     ```
 
-- ##### Step 6 - Change Project Ownership
+- ##### Step 7 - Change Project Ownership
     ```sh
     # dir (cassandra)
     $ sudo chown -R $USER:$USER djangoapp
     ```
 
-- ##### Step 7 - CRUD Development
+- ##### Step 8 - CRUD Development
     1. Edit [settings.py](djangoapp/djangoapp/settings.py)
 
     2. Edit [models.py](djangoapp/humans/models.py)
@@ -235,8 +242,237 @@
         ```
 
     6. Create [index.html](djangoapp/templates/index.html)
+        ```html
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+            <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+
+            <title>Home</title>
+        </head>
+
+        <body>
+            <div class="container">
+                <div class="page-container">
+                    <main class="main-container">
+                        <div class="block">
+                            <div class="block-header">
+                                <h1 class="text-center">Humans</h1>
+                            </div>
+                            <div class="block-body">
+                                <a href="{% url 'add' %}" class="btn btn-sm btn-success pull-left"><i class="glyphicon glyphicon-plus"></i> Add Humans</a>
+                                <btn style="pointer-events:none" class="ml-4 btn btn-sm btn-info pull-left"><i class="glyphicon glyphicon-stats"></i> Total Data : {{ humans.paginator.count }}</btn><br></br>
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-bordered mt-5">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Refund</th>
+                                                <th>Married Status</th>
+                                                <th>Income</th>
+                                                <th>Cheat</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if humans.paginator.count != 0 %}
+                                            {% for human in humans %}
+                                            <tr>
+                                                <td>{{ human.sr_no }}</td>
+                                                <td>{{ human.refund }}</td>
+                                                <td>{{ human.m_status }}</td>
+                                                <td>{{ human.income }}</td>
+                                                <td>{{ human.cheat }}</td>
+                                                <td class="text-center">
+                                                    <a href="{% url 'edit' human.sr_no %}" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                                                    <a href="{% url 'delete' human.sr_no %}" class="btn btn-sm btn-danger"><i class="glyphicon glyphicon-trash"></i> Delete</a>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <td class="text-center" colspan="7">No Data Available</td>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                    {% comment %} <div class="text-center">
+                                        {% if humans.has_other_pages %}
+                                        <ul class="pagination">
+                                            {% if humans.has_previous %}
+                                                <li><a href="?page={{ humans.previous_page_number }}">&laquo;</a></li>
+                                            {% else %}
+                                                <li class="disabled"><span>&laquo;</span></li>
+                                            {% endif %}
+
+                                            {% for i in humans.paginator.page_range %}
+                                                {% if humans.number == i %}
+                                                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                                                {% elif i > humans.number|add:'-4' and i < humans.number|add:'4' %}
+                                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            {% if humans.has_next %}
+                                                <li><a href="?page={{ humans.next_page_number }}">&raquo;</a></li>
+                                            {% else %}
+                                                <li class="disabled"><span>&raquo;</span></li>
+                                            {% endif %}
+                                        </ul>
+                                        {% endif %}
+                                    </div> {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+            <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $('#example').DataTable({
+                        "paging":   true,
+                        "ordering": true,
+                        "info":     true
+                    });
+                } );
+            </script>
+        </body>
+
+        </html>
+        ```
+
     7. Create [add.html](djangoapp/templates/add.html)
+        ```html
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+            <title>Add Human Data</title>
+        </head>
+
+        <body>
+            <div class="container">
+                <div class="page-container">
+                    <main class="main-container">
+                        <div class="block">
+                            <div class="block-header mt-5">
+                                <h1 class="text-center">Add Human Data</h1>
+                            </div>
+                            <div class="block-body">
+                                <form method="POST" action="{% url 'index' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">SR No</label>
+                                        <input type="text" name="sr_no" class="form-control" placeholder="SR No">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Refund</label>
+                                        <input type="text" name="refund" class="form-control" placeholder="Refund">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Married Status</label>
+                                        <input type="text" name="m_status" class="form-control" placeholder="Married Status">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Income</label>
+                                        <input type="text" name="income" class="form-control" placeholder="Income">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Cheat</label>
+                                        <input type="text" name="cheat" class="form-control" placeholder="Cheat">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        </body>
+
+        </html>
+        ```
     8. Create [edit.html](djangoapp/templates/edit.html)
+        ```html
+        <!DOCTYPE html>
+        <html lang="en">
+
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="ie=edge">
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+            <title>Edit Human Data</title>
+        </head>
+
+        <body>
+            <div class="container">
+                <div class="page-container">
+                    <main class="main-container">
+                        <div class="block">
+                            <div class="block-header">
+                                <h1 class="text-center">Edit Human Data</h1>
+                            </div>
+                            <div class="block-body">
+                                <form method="POST" action="{% url 'edit' human.sr_no %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">SR No</label>
+                                        <input type="text" value="{{ human.sr_no }}" name="" class="form-control" placeholder="Refund" disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Refund</label>
+                                        <input type="text" value="{{ human.refund }}" name="refund" class="form-control" placeholder="Refund">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Married Status</label>
+                                        <input type="text" value="{{ human.m_status }}" name="m_status" class="form-control" placeholder="Married Status">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Income</label>
+                                        <input type="text" value="{{ human.income }}" name="income" class="form-control" placeholder="Income">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Cheat</label>
+                                        <input type="text" value="{{ human.cheat }}" name="cheat" class="form-control" placeholder="Cheat">
+                                    </div>
+                                    <button type="submit" class="btn btn-success">Submit</button>
+                                </form>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        </body>
+
+        </html>
+        ```
 
 - ##### Step 8 - Make Sure Your Directory Tree Like This
         cassandra
@@ -267,7 +503,7 @@
         ├── sources.list
         └── Vagrantfile
 
-- ##### Step 9 - Import Dataset
+- ##### Step 10 - Import Dataset
     ```sh
     # dir (cassandra)
     $ vagrant ssh
@@ -293,3 +529,5 @@
 
 - ##### Testing
     - Try to access http://localhost:8000/ on Browser
+
+    ![gambar](img/index.png)
