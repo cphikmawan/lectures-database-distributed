@@ -24,7 +24,7 @@
                     </div>
                     <div class="block-body">
                         <a href="{% url 'add' %}" class="btn btn-sm btn-success pull-left"><i class="glyphicon glyphicon-plus"></i> Add Humans</a>
-                        <btn style="pointer-events:none" class="ml-4 btn btn-sm btn-info pull-left"><i class="glyphicon glyphicon-stats"></i> Total Data : {{ humans.paginator.count }}</btn>
+                        <btn style="pointer-events:none" class="ml-4 btn btn-sm btn-info pull-left"><i class="glyphicon glyphicon-stats"></i> Total Data : {{ humans.paginator.count }}</btn><br></br>
                         <div class="table-responsive">
                             <table id="example" class="table table-bordered mt-5">
                                 <thead>
@@ -57,7 +57,7 @@
                                 {% endif %}
                                 </tbody>
                             </table>
-                            <div class="text-center">
+                            {% comment %} <div class="text-center">
                                 {% if humans.has_other_pages %}
                                 <ul class="pagination">
                                     {% if humans.has_previous %}
@@ -81,7 +81,7 @@
                                     {% endif %}
                                 </ul>
                                 {% endif %}
-                            </div>
+                            </div> {% endcomment %}
                         </div>
                     </div>
                 </div>
@@ -96,9 +96,9 @@
     <script>
         $(document).ready(function() {
             $('#example').DataTable({
-                "paging":   false,
-                "ordering": false,
-                "info":     false
+                "paging":   true,
+                "ordering": true,
+                "info":     true
             });
         } );
     </script>

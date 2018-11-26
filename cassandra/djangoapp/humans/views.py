@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from humans.models import Humans
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt,csrf_protect
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+# from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @csrf_exempt
 def index(request):
@@ -21,15 +21,15 @@ def index(request):
         human.save()
 
     humans = Humans.objects.all()
-    page = request.GET.get('page', 1)
+    # page = request.GET.get('page', 1)
 
-    paginator = Paginator(humans, 5)
-    try:
-        humans = paginator.page(page)
-    except PageNotAnInteger:
-        humans = paginator.page(1)
-    except EmptyPage:
-        humans = paginator.page(paginator.num_pages)
+    # paginator = Paginator(humans, 5)
+    # try:
+    #     humans = paginator.page(page)
+    # except PageNotAnInteger:
+    #     humans = paginator.page(1)
+    # except EmptyPage:
+    #     humans = paginator.page(paginator.num_pages)
 
     return render(request, 'index.html', {'humans': humans})
 
